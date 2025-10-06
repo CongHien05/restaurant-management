@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/table_item_background"
+    android:elevation="2dp"
+    android:layout_margin="4dp"
+    android:padding="16dp">
+
+    <!-- Table Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Table Number -->
+        <TextView
+            android:id="@+id/text_table_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Bàn 1"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            tools:text="Bàn 1" />
+
+        <!-- Status Badge -->
+        <TextView
+            android:id="@+id/text_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trống"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:background="@drawable/status_available_background"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            tools:text="Trống" />
+
+    </LinearLayout>
+
+    <!-- Table Name -->
+    <TextView
+        android:id="@+id/text_table_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bàn VIP"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="4dp"
+        tools:text="Bàn VIP" />
+
+    <!-- Area Name -->
+    <TextView
+        android:id="@+id/text_area_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Khu vực A"
+        android:textSize="12sp"
+        android:textColor="@color/gray_600"
+        android:layout_marginTop="2dp"
+        tools:text="Khu vực A" />
+
+    <!-- Order Info -->
+    <LinearLayout
+        android:id="@+id/layout_order_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray_200"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/text_order_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đặt lúc: 14:30"
+            android:textSize="12sp"
+            android:textColor="@color/gray_600"
+            tools:text="Đặt lúc: 14:30" />
+
+        <TextView
+            android:id="@+id/text_total_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tổng: 150,000đ"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            tools:text="Tổng: 150,000đ" />
+
+    </LinearLayout>
+
+</LinearLayout>

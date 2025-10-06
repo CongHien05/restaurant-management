@@ -1,0 +1,117 @@
+<resources>
+    <string name="app_name">Restaurant Staff</string>
+
+    <!-- Authentication -->
+    <string name="login">Đăng Nhập</string>
+    <string name="logout">Đăng Xuất</string>
+    <string name="username">Tên đăng nhập</string>
+    <string name="password">Mật khẩu</string>
+    <string name="remember_me">Ghi nhớ đăng nhập</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+
+    <!-- Navigation -->
+    <string name="nav_tables">Bàn Ăn</string>
+    <string name="nav_menu">Thực Đơn</string>
+    <string name="nav_orders">Đơn Hàng</string>
+    <string name="nav_profile">Cá Nhân</string>
+
+    <!-- Tables -->
+    <string name="table_available">Trống</string>
+    <string name="table_occupied">Có khách</string>
+    <string name="table_reserved">Đã đặt</string>
+    <string name="table_cleaning">Đang dọn</string>
+    <string name="table_maintenance">Bảo trì</string>
+
+    <!-- Orders -->
+    <string name="order_draft">Đang tạo</string>
+    <string name="order_submitted">Đã gửi</string>
+    <string name="order_confirmed">Đã xác nhận</string>
+    <string name="order_preparing">Đang chế biến</string>
+    <string name="order_ready">Sẵn sàng</string>
+    <string name="order_served">Đã phục vụ</string>
+    <string name="order_paid">Đã thanh toán</string>
+    <string name="order_cancelled">Đã hủy</string>
+
+    <!-- Menu -->
+    <string name="search_menu">Tìm kiếm món ăn...</string>
+    <string name="add_to_order">Thêm vào đơn</string>
+    <string name="popular_item">Món hot</string>
+    <string name="not_available">Hết món</string>
+
+    <!-- Actions -->
+    <string name="create_order">Tạo đơn hàng</string>
+    <string name="submit_order">Gửi đơn hàng</string>
+    <string name="update_order">Cập nhật đơn hàng</string>
+    <string name="pay_order">Thanh toán</string>
+    <string name="cancel_order">Hủy đơn hàng</string>
+    <string name="add_item">Thêm món</string>
+    <string name="remove_item">Xóa món</string>
+    <string name="edit_item">Sửa món</string>
+
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Hủy</string>
+    <string name="save">Lưu</string>
+    <string name="delete">Xóa</string>
+    <string name="edit">Sửa</string>
+    <string name="refresh">Làm mới</string>
+    <string name="loading">Đang tải...</string>
+    <string name="error">Lỗi</string>
+    <string name="success">Thành công</string>
+    <string name="warning">Cảnh báo</string>
+    <string name="confirm">Xác nhận</string>
+
+    <!-- Quantities -->
+    <string name="quantity">Số lượng</string>
+    <string name="price">Giá</string>
+    <string name="total">Tổng cộng</string>
+    <string name="subtotal">Tạm tính</string>
+    <string name="discount">Giảm giá</string>
+    <string name="tax">Thuế</string>
+    <string name="service_charge">Phí phục vụ</string>
+
+    <!-- Payment -->
+    <string name="payment_cash">Tiền mặt</string>
+    <string name="payment_card">Thẻ</string>
+    <string name="payment_transfer">Chuyển khoản</string>
+    <string name="payment_ewallet">Ví điện tử</string>
+    <string name="payment_voucher">Voucher</string>
+
+    <!-- Messages -->
+    <string name="login_success">Đăng nhập thành công!</string>
+    <string name="login_failed">Đăng nhập thất bại</string>
+    <string name="logout_success">Đăng xuất thành công!</string>
+    <string name="order_created">Đơn hàng đã được tạo</string>
+
+    <string name="order_updated">Đơn hàng đã được cập nhật</string>
+    <string name="payment_success">Thanh toán thành công</string>
+    <string name="network_error">Lỗi kết nối mạng</string>
+    <string name="server_error">Lỗi server</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_logo">Logo ứng dụng</string>
+    <string name="cd_menu_item_image">Hình ảnh món ăn</string>
+    <string name="cd_increase_quantity">Tăng số lượng</string>
+    <string name="cd_decrease_quantity">Giảm số lượng</string>
+    <string name="cd_table_status">Trạng thái bàn</string>
+
+    <!-- Validation -->
+    <string name="field_required">Trường này bắt buộc</string>
+    <string name="invalid_username">Tên đăng nhập không hợp lệ</string>
+    <string name="invalid_password">Mật khẩu phải có ít nhất 6 ký tự</string>
+    <string name="quantity_must_be_positive">Số lượng phải lớn hơn 0</string>
+
+    <!-- Empty States -->
+    <string name="no_tables">Không có bàn nào</string>
+    <string name="no_menu_items">Không có món nào</string>
+    <string name="no_orders">Không có đơn hàng nào</string>
+    <string name="empty_cart">Giỏ hàng trống</string>
+
+    <!-- Time -->
+    <string name="preparation_time">Thời gian chế biến: %d phút</string>
+    <string name="order_time">Thời gian đặt: %s</string>
+    <string name="today">Hôm nay</string>
+    <string name="yesterday">Hôm qua</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_tables">
+
+    <fragment
+        android:id="@+id/nav_tables"
+        android:name="com.restaurant.staff.ui.tables.TablesFragment"
+        android:label="@string/nav_tables"
+        tools:layout="@layout/fragment_tables" />
+
+    <fragment
+        android:id="@+id/nav_menu"
+        android:name="com.restaurant.staff.ui.menu.MenuFragment"
+        android:label="@string/nav_menu"
+        tools:layout="@layout/fragment_menu" />
+
+    <fragment
+        android:id="@+id/nav_orders"
+        android:name="com.restaurant.staff.ui.orders.OrdersFragment"
+        android:label="@string/nav_orders"
+        tools:layout="@layout/fragment_orders" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.restaurant.staff.ui.profile.ProfileFragment"
+        android:label="@string/nav_profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/nav_order"
+        android:name="com.restaurant.staff.ui.order.OrderFragment"
+        android:label="Đặt món"
+        tools:layout="@layout/fragment_order">
+        <argument
+            android:name="tableId"
+            app:argType="integer" />
+    </fragment>
+
+</navigation>
+

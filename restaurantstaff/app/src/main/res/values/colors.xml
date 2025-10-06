@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="primary_color">#FF6B35</color>
+    <color name="primary_dark">#E55A2B</color>
+    <color name="primary_light">#FFE0D6</color>
+
+    <!-- Secondary Colors -->
+    <color name="secondary_color">#4CAF50</color>
+    <color name="secondary_dark">#388E3C</color>
+    <color name="secondary_light">#81C784</color>
+
+    <!-- Background Colors -->
+    <color name="background_light">#FAFAFA</color>
+    <color name="background_white">#FFFFFF</color>
+    <color name="background_gray">#F5F5F5</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
+    <color name="text_white">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="status_available">#4CAF50</color>    <!-- Green -->
+    <color name="status_occupied">#F44336</color>     <!-- Red -->
+    <color name="status_reserved">#FF9800</color>     <!-- Orange -->
+    <color name="status_cleaning">#2196F3</color>     <!-- Blue -->
+    <color name="status_maintenance">#9E9E9E</color>  <!-- Gray -->
+    <color name="status_default">#9E9E9E</color>      <!-- Gray -->
+
+    <!-- Order Status Colors -->
+    <color name="order_draft">#9E9E9E</color>         <!-- Gray -->
+    <color name="order_submitted">#2196F3</color>     <!-- Blue -->
+    <color name="order_confirmed">#FF9800</color>     <!-- Orange -->
+    <color name="order_preparing">#FF5722</color>     <!-- Deep Orange -->
+    <color name="order_ready">#4CAF50</color>         <!-- Green -->
+    <color name="order_served">#8BC34A</color>        <!-- Light Green -->
+    <color name="order_paid">#795548</color>          <!-- Brown -->
+    <color name="order_cancelled">#F44336</color>     <!-- Red -->
+
+    <!-- Accent Colors -->
+    <color name="accent_blue">#2196F3</color>
+    <color name="accent_green">#4CAF50</color>
+    <color name="accent_orange">#FF9800</color>
+    <color name="accent_red">#F44336</color>
+
+    <!-- Material Design Colors -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Transparent Colors -->
+    <color name="transparent">#00000000</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="white_overlay">#66FFFFFF</color>
+
+    <!-- Additional Colors for Order Feature -->
+    <color name="gray_50">#FAFAFA</color>
+    <color name="gray_100">#F5F5F5</color>
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_500">#9E9E9E</color>
+    <color name="gray_600">#757575</color>
+    <color name="blue_50">#E3F2FD</color>
+    <color name="blue_600">#1976D2</color>
+    <color name="green_50">#E8F5E8</color>
+    <color name="green_600">#43A047</color>
+    <color name="red_500">#F44336</color>
+
+    <!-- Theme Colors -->
+    <color name="colorPrimary">@color/primary_color</color>
+    <color name="colorPrimaryDark">@color/primary_dark</color>
+    <color name="colorAccent">@color/accent_blue</color>
+    <!-- Custom colors -->
+    <color name="primary">#FF6200EE</color>
+    <color name="accent">#FF03DAC5</color>
+    <color name="background">#FFF5F5F5</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="error">#FFB00020</color>
+    <color name="on_primary">#FFFFFFFF</color>
+    <color name="on_secondary">#FF000000</color>
+    <color name="on_background">#FF000000</color>
+    <color name="on_surface">#FF000000</color>
+    <color name="on_error">#FFFFFFFF</color>
+
+
+    <!-- Search colors -->
+    <color name="search_highlight">#FFEB3B</color>
+    <color name="search_highlight_text">#000000</color>
+
+</resources>

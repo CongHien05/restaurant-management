@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="2dp"
+    app:strokeColor="#E0E0E0">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Table Number & Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/text_table_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="T01"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:gravity="center" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trống"
+                android:textSize="10sp"
+                style="@style/Widget.MaterialComponents.Chip.Action" />
+
+        </LinearLayout>
+
+        <!-- Pending Amount - Prominent Display -->
+        <LinearLayout
+            android:id="@+id/layout_pending_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="#E8F5E8"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💰 Chờ thanh toán"
+                android:textSize="10sp"
+                android:textColor="#2E7D32"
+                android:layout_marginBottom="2dp" />
+
+            <TextView
+                android:id="@+id/text_pending_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₫0"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1B5E20"
+                android:background="#C8E6C9"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:minWidth="100dp"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <!-- Table Info -->
+        <TextView
+            android:id="@+id/text_table_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bàn T01"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:gravity="center"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/text_area_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📍 Tầng trệt"
+            android:textSize="10sp"
+            android:textColor="#888888"
+            android:gravity="center"
+            android:layout_marginBottom="6dp" />
+
+        <!-- Capacity Info -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👥"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/text_capacity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4 người"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginStart="4dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
