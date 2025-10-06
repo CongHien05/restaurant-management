@@ -284,8 +284,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact & Support
 
-- **Email**: your.email@example.com
-- **GitHub**: [@yourusername](https://github.com/CongHien05)
+- **Email**: phamconghien18@gmail.com
+- **GitHub**: [CongHien05](https://github.com/CongHien05)
 
 ---
 
