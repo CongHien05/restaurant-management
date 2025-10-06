@@ -692,11 +692,11 @@ include __DIR__ . '/includes/sidebar.php';
                 PAYMENT_MODAL?.hide();
                 
                 // Refresh all relevant UI components
-                loadStats();
+            loadStats();
                 if (typeof loadMiniChart === 'function') { loadMiniChart(); }
                 if (typeof loadTopItems === 'function') { loadTopItems(); }
                 if (typeof renderPaymentQueue === 'function') { renderPaymentQueue(); }
-                loadTables();
+            loadTables();
                 
                 // Refresh approvals badge count (in case completed order had pending items)
                 if (typeof window.updatePendingApprovalsBadge === 'function') {
