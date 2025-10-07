@@ -27,15 +27,46 @@ class OrderRepository(
                     if (order != null) {
                         // Cache order
                         orderDao.insertOrder(order)
-                        // Cache items if present
+                        
+                        // QUAN TRỌNG: Xử lý cache order_items
                         order.items?.let { items ->
                             if (items.isNotEmpty()) {
+                                // Có món: cache vào DB
                                 orderDao.insertOrderItems(items)
+                                android.util.Log.d("OrderRepository", "✅ Cached ${items.size} items for order ${order.id}")
+                            } else {
+                                // KHÔNG CÓ món (đã thanh toán): XÓA cache cũ
+                                order.id?.let { orderId ->
+                                    orderDao.deleteOrderItemsByOrderId(orderId)
+                                    android.util.Log.d("OrderRepository", "✅ Cleared items cache for order $orderId (empty from API)")
+                                }
+                            }
+                        } ?: run {
+                            // items = null: cũng XÓA cache
+                            order.id?.let { orderId ->
+                                orderDao.deleteOrderItemsByOrderId(orderId)
+                                android.util.Log.d("OrderRepository", "✅ Cleared items cache for order $orderId (null from API)")
                             }
                         }
+                        
                         // Trả payload với order đầy đủ
                         payload
                     } else {
+                        // Order = null từ getCurrentOrder
+                        // → Bàn trống hoặc order đã completed
+                        // XÓA cache cũ của bàn này
+                        android.util.Log.d("OrderRepository", "API returned null order for table $tableId - clearing cache")
+                        try {
+                            val localOrder = orderDao.getCurrentOrderByTable(tableId)
+                            localOrder?.id?.let { oid ->
+                                orderDao.deleteOrderItemsByOrderId(oid)
+                                orderDao.deleteOrderById(oid)
+                                android.util.Log.d("OrderRepository", "✅ Cleared cache for table $tableId (order completed/cancelled)")
+                            }
+                        } catch (e: Exception) {
+                            android.util.Log.e("OrderRepository", "Failed to clear cache: ${e.message}")
+                        }
+                        
                         // Thử fallback sang /tables/{id}/details để lấy items/pending
                         when (val td = NetworkUtils.safeApiCall { tableApiService.getTableDetails(tableId) }) {
                             is NetworkResult.Success -> {
@@ -48,14 +79,36 @@ class OrderRepository(
                                         items = details.orderItems ?: emptyList()
                                     )
                                     mergedOrder.pendingItems = details.pendingItems ?: emptyList()
-                                    // cache order và confirmed items
+                                    
+                                    // Cache order
                                     orderDao.insertOrder(mergedOrder)
+                                    
+                                    // QUAN TRỌNG: Xử lý cache items
                                     if (!mergedOrder.items.isNullOrEmpty()) {
                                         orderDao.insertOrderItems(mergedOrder.items!!)
+                                        android.util.Log.d("OrderRepository", "✅ Cached ${mergedOrder.items!!.size} items from details")
+                                    } else {
+                                        // KHÔNG CÓ món: XÓA cache cũ
+                                        mergedOrder.id?.let { orderId ->
+                                            orderDao.deleteOrderItemsByOrderId(orderId)
+                                            android.util.Log.d("OrderRepository", "✅ Cleared items cache from details (empty)")
+                                        }
                                     }
+                                    
                                     // Trả payload với order mới merge
                                     CurrentOrderPayload(order = mergedOrder)
                                 } else {
+                                    // Không có order: XÓA toàn bộ cache của bàn
+                                    try {
+                                        val localOrder = orderDao.getCurrentOrderByTable(tableId)
+                                        localOrder?.id?.let { oid ->
+                                            orderDao.deleteOrderItemsByOrderId(oid)
+                                            orderDao.deleteOrderById(oid)
+                                            android.util.Log.d("OrderRepository", "✅ Cleared all cache for table $tableId (no active order)")
+                                        }
+                                    } catch (e: Exception) {
+                                        android.util.Log.e("OrderRepository", "Failed to clear cache: ${e.message}")
+                                    }
                                     null
                                 }
                             }
@@ -76,18 +129,21 @@ class OrderRepository(
                     }
                 }
                 is NetworkResult.Error -> {
-                    // Fallback to local cache
+                    android.util.Log.w("OrderRepository", "API error for table $tableId: ${result.message}")
+                    // QUAN TRỌNG: Chỉ fallback cache nếu order ĐANG HOẠT ĐỘNG
                     val localOrder = orderDao.getCurrentOrderByTable(tableId)
-                    if (localOrder != null) {
+                    if (localOrder != null && isActiveOrder(localOrder.status)) {
+                        android.util.Log.d("OrderRepository", "Using cached order ${localOrder.id} (API error)")
                         CurrentOrderPayload(order = localOrder)
                     } else {
+                        android.util.Log.d("OrderRepository", "Cached order invalid/completed - returning null")
                         null
                     }
                 }
                 is NetworkResult.Loading -> {
-                    // Return local cache while loading
+                    // Return local cache while loading (chỉ nếu còn active)
                     val localOrder = orderDao.getCurrentOrderByTable(tableId)
-                    if (localOrder != null) {
+                    if (localOrder != null && isActiveOrder(localOrder.status)) {
                         CurrentOrderPayload(order = localOrder)
                     } else {
                         null
@@ -95,15 +151,23 @@ class OrderRepository(
                 }
             }
         } catch (e: Exception) {
-            // Fallback to local cache on any exception
+            android.util.Log.e("OrderRepository", "Exception loading order for table $tableId: ${e.message}")
+            // Fallback to local cache (chỉ nếu còn active)
             val localOrder = orderDao.getCurrentOrderByTable(tableId)
-            if (localOrder != null) {
+            if (localOrder != null && isActiveOrder(localOrder.status)) {
                 CurrentOrderPayload(order = localOrder)
             } else {
                 null
             }
         }
     }
+    
+    // Helper: Kiểm tra order còn active không (KHÔNG phải completed/cancelled)
+    private fun isActiveOrder(status: String?): Boolean {
+        val activeStatuses = listOf("pending", "confirmed", "preparing", "ready", "served")
+        return status != null && activeStatuses.contains(status.lowercase())
+    }
+    
     suspend fun getOrders(
         page: Int = 1,
         limit: Int = 20,
@@ -379,8 +443,18 @@ class OrderRepository(
                 is NetworkResult.Success<PaymentResponse> -> {
                     val paymentResponse = result.data
 
-                    // Update local order status to completed
+                    // QUAN TRỌNG: Sau thanh toán thành công
+                    // 1. Update order status = completed
                     orderDao.updateOrderStatus(orderId, "completed")
+                    
+                    // 2. XÓA tất cả order_items khỏi cache
+                    //    Backend đã xóa trong DB, app cũng phải xóa cache
+                    try {
+                        orderDao.deleteOrderItemsByOrderId(orderId)
+                        android.util.Log.d("OrderRepository", "✅ Cleared order items for order $orderId after payment")
+                    } catch (e: Exception) {
+                        android.util.Log.e("OrderRepository", "❌ Failed to clear order items: ${e.message}")
+                    }
 
                     emit(Resource.Success(paymentResponse))
                 }

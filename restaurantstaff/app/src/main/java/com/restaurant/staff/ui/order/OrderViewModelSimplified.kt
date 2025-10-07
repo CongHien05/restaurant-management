@@ -107,21 +107,19 @@ class OrderViewModelSimplified(
                 _currentOrder.value = order
 
                 if (order != null) {
-                    // Prefer fresh items from payload; fallback to local cache
+                    // QUAN TRỌNG: Chỉ dùng items từ API, KHÔNG fallback cache
+                    // Lý do: Nếu API trả items=[], nghĩa là đã thanh toán → phải hiển thị rỗng
                     val payloadItems = order.items
                     android.util.Log.d("OrderViewModelSimplified", "Payload items: ${payloadItems?.size ?: 0}, isEmpty=${payloadItems?.isEmpty()}, isNull=${payloadItems == null}")
-                    if (payloadItems != null && payloadItems.isNotEmpty()) {
-                        _orderItems.value = payloadItems
-                        android.util.Log.d("OrderViewModelSimplified", "Loaded ${payloadItems.size} order items from payload")
-                    } else {
-                        val items = orderRepository.getOrderItems(order.id)
-                        _orderItems.value = items
-                        android.util.Log.d("OrderViewModelSimplified", "Loaded ${items.size} order items from cache (fallback)")
-                    }
-                    // Bind pending items from payload
+                    
+                    _orderItems.value = payloadItems ?: emptyList()
+                    android.util.Log.d("OrderViewModelSimplified", "Loaded ${_orderItems.value.size} order items (no fallback)")
+                    
+                    // Bind pending items từ payload
                     _pendingItems.value = order.pendingItems ?: emptyList()
                     android.util.Log.d("OrderViewModelSimplified", "Loaded ${order.pendingItems?.size ?: 0} pending items")
                 } else {
+                    // Không có order: clear tất cả
                     _orderItems.value = emptyList()
                     _pendingItems.value = emptyList()
                     android.util.Log.d("OrderViewModelSimplified", "No order found for table $currentTableId")

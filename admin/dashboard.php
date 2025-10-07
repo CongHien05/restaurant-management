@@ -438,21 +438,24 @@ include __DIR__ . '/includes/sidebar.php';
         async function openPaymentModal(tableId, action){
             try {
                 CURRENT_TABLE_ID = tableId;
-                // lấy đơn mới nhất theo bàn (giả định đơn đầu tiên là hoạt động)
-                const orders = await AdminAPI.request(`/orders?table_id=${tableId}&limit=1`);
-                const order = Array.isArray(orders?.orders) ? orders.orders[0] : (Array.isArray(orders) ? orders[0] : null);
-                if (!order) {
-                    showPmAlert('Không tìm thấy đơn hoạt động của bàn này.');
+                
+                // QUAN TRỌNG: Chỉ lấy từ /admin/tables/{id}/details
+                // API này đã filter đúng: chỉ trả order ĐANG HOẠT ĐỘNG (NOT IN completed/cancelled)
+                const tableDetails = await AdminAPI.request(`/admin/tables/${tableId}/details`);
+                
+                // Kiểm tra xem có order đang hoạt động không
+                if (!tableDetails?.order || !tableDetails.order.id) {
+                    showPmAlert('Bàn này không có đơn hoạt động. Có thể đã thanh toán hoặc chưa có order.');
                     return;
                 }
-                // lấy chi tiết đơn hàng (bao gồm pending_items)
-                const tableDetails = await AdminAPI.request(`/admin/tables/${tableId}/details`);
+                
+                // Build CURRENT_ORDER từ tableDetails
                 CURRENT_ORDER = {
-                    id: order.id,
-                    table_name: tableDetails?.table?.name || order.table_name,
-                    items: tableDetails?.order_items || [],
-                    pending_items: tableDetails?.pending_items || [],
-                    status: order.status
+                    id: tableDetails.order.id,
+                    table_name: tableDetails.table?.name || `Bàn ${tableId}`,
+                    items: tableDetails.order_items || [],
+                    pending_items: tableDetails.pending_items || [],
+                    status: tableDetails.order.status
                 };
                 // Kiểm tra trạng thái đơn để cho phép thanh toán
                 const eligible = ['served'];
@@ -681,32 +684,49 @@ include __DIR__ . '/includes/sidebar.php';
         async function confirmPayment(){
             try {
                 if (!CURRENT_ORDER?.id) return;
-                // cập nhật status sang completed (tùy backend thay bằng /payments)
-                await AdminAPI.request(`/orders/${CURRENT_ORDER.id}/status`, { method: 'PUT', body: JSON.stringify({ status: 'completed' }) });
-                // Đưa bàn về trạng thái trống ngay sau khi thanh toán
-                if (CURRENT_TABLE_ID) {
-                    try { await AdminAPI.request(`/tables/${CURRENT_TABLE_ID}/status`, { method: 'PUT', body: JSON.stringify({ status: 'available' }) }); } catch(e) { console.warn('update table status failed', e); }
-                }
-                // Xoá danh sách món trong UI để phản ánh bàn trống
-                if (CURRENT_ORDER) { CURRENT_ORDER.items = []; renderPmOrder(CURRENT_ORDER); }
+                
+                // Disable button để tránh double-click
+                const btn = document.getElementById('pmConfirmBtn');
+                if (btn) { btn.disabled = true; btn.textContent = 'Đang xử lý...'; }
+                
+                // QUAN TRỌNG: Backend sẽ tự động:
+                // - Update order.status = 'completed'
+                // - DELETE order_items  
+                // - UPDATE tables.status = 'available'
+                // - UPDATE kitchen_orders.status = 'served'
+                await AdminAPI.request(`/orders/${CURRENT_ORDER.id}/status`, { 
+                    method: 'PUT', 
+                    body: JSON.stringify({ status: 'completed' }) 
+                });
+                
+                // Đóng modal ngay
                 PAYMENT_MODAL?.hide();
                 
-                // Refresh all relevant UI components
-            loadStats();
+                // XÓA cache để force reload
+                CURRENT_ORDER = null;
+                CURRENT_TABLE_ID = null;
+                
+                // REFRESH tất cả components
+                loadStats();
                 if (typeof loadMiniChart === 'function') { loadMiniChart(); }
                 if (typeof loadTopItems === 'function') { loadTopItems(); }
                 if (typeof renderPaymentQueue === 'function') { renderPaymentQueue(); }
-            loadTables();
                 
-                // Refresh approvals badge count (in case completed order had pending items)
+                // QUAN TRỌNG: Reload danh sách bàn để hiển thị bàn trống
+                loadTables();
+                
+                // Refresh badge
                 if (typeof window.updatePendingApprovalsBadge === 'function') {
                     window.updatePendingApprovalsBadge();
                 }
                 
-                alert('Thanh toán thành công!');
+                alert('✅ Thanh toán thành công! Bàn đã được giải phóng.');
             } catch(e){ 
                 console.error('payment error', e); 
-                showPmAlert('Không thể thanh toán: ' + (e.message || 'Lỗi không xác định')); 
+                showPmAlert('Không thể thanh toán: ' + (e.message || 'Lỗi không xác định'));
+                // Re-enable button nếu lỗi
+                const btn = document.getElementById('pmConfirmBtn');
+                if (btn) { btn.disabled = false; btn.textContent = 'Xác nhận thanh toán'; }
             }
         }
     </script>
