@@ -770,7 +770,7 @@ class AdminController extends BaseController {
     
     public function getKitchenOrders() {
         try {
-            $status = $this->getQueryParam('status', 'pending');
+            $status = $this->getQueryParam('status', 'pending_approval');
             
             $stmt = $this->db->prepare("
                 SELECT ko.*, t.name as table_name

@@ -7,17 +7,33 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('[AdminApp] Token loaded from PHP session');
     }
 
-    // Sidebar pending approvals badge
-    const badge = document.getElementById('pendingApprovalBadge');
+    // Sidebar pending approvals badge (both desktop and mobile)
+    const badgeDesktop = document.getElementById('pendingApprovalBadge');
+    const badgeMobile = document.getElementById('pendingApprovalBadgeMobile');
+    
     async function refreshPendingBadge(){
-        if (!badge || !window.AdminAPI) return;
+        if (!window.AdminAPI) return;
         try {
             const res = await AdminAPI.request('/admin/kitchen/orders?status=pending_approval');
             const count = (res && Array.isArray(res.kitchen_orders)) ? res.kitchen_orders.length : 0;
-            if (count > 0) { badge.textContent = count; badge.style.display = 'inline-block'; }
-            else { badge.style.display = 'none'; }
+            
+            // Update both desktop and mobile badges
+            [badgeDesktop, badgeMobile].forEach(badge => {
+                if (badge) {
+                    if (count > 0) { 
+                        badge.textContent = count; 
+                        badge.style.display = 'inline-block'; 
+                    } else { 
+                        badge.style.display = 'none'; 
+                    }
+                }
+            });
         } catch(e){ console.warn('refreshPendingBadge error', e); }
     }
+    
+    // Global function to allow other pages to refresh badge
+    window.updatePendingApprovalsBadge = refreshPendingBadge;
+    
     refreshPendingBadge();
     setInterval(refreshPendingBadge, 30000);
 });

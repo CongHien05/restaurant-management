@@ -55,8 +55,10 @@ include __DIR__ . '/includes/sidebar.php';
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" onclick="printApproval()">In thử</button>
+                    <button id="apCancelBtn" class="btn btn-danger" onclick="cancelApproval()">Hủy xác nhận</button>
+                    <button id="apApproveOnlyBtn" class="btn btn-success" onclick="approveOnly()">Duyệt</button>
                     <button id="apApproveBtn" class="btn btn-primary" onclick="approveAndPrint()">Duyệt + In</button>
-                    <button class="btn btn-success" onclick="markPrinted()">Đã in</button>
+                    <button id="apMarkPrintedBtn" class="btn btn-secondary" onclick="markPrinted()">Đánh dấu đã in</button>
                 </div>
             </div>
         </div>
@@ -119,15 +121,29 @@ async function openApproval(id){
         if (!currentOrder) return;
         document.getElementById('apAlert').classList.add('d-none');
         document.getElementById('apInfo').textContent = `Bàn ${currentOrder.table_name||currentOrder.table_id} • Phiếu #${currentOrder.id}`;
-        document.getElementById('apMeta').textContent = `Order ${currentOrder.order_number||'—'} • NV: ${currentOrder.staff_name||'—'}`;
+        document.getElementById('apMeta').textContent = `Order ${currentOrder.order_number||'—'} • NV: ${currentOrder.staff_name||'—'} • Trạng thái: ${currentOrder.status||'—'}`;
         const body = document.getElementById('apItems'); body.innerHTML = '';
         (currentOrder.items||[]).forEach(it=>{
             const tr = document.createElement('tr');
             tr.innerHTML = `<td>${it.item_name}</td><td class="text-center">${it.quantity}</td><td>${it.special_instructions||''}</td>`;
             body.appendChild(tr);
         });
+        // Enable/disable buttons based on status
         const approveBtn = document.getElementById('apApproveBtn');
-        approveBtn.disabled = currentOrder.status !== 'pending_approval';
+        const approveOnlyBtn = document.getElementById('apApproveOnlyBtn');
+        const cancelBtn = document.getElementById('apCancelBtn');
+        const markPrintedBtn = document.getElementById('apMarkPrintedBtn');
+        const isPending = currentOrder.status === 'pending_approval';
+        const isApproved = currentOrder.status === 'approved';
+        
+        // Pending: có thể duyệt hoặc hủy
+        approveBtn.disabled = !isPending;
+        approveOnlyBtn.disabled = !isPending;
+        cancelBtn.disabled = !isPending;
+        
+        // Đã duyệt: chỉ có thể đánh dấu đã in
+        markPrintedBtn.disabled = !isApproved;
+        
         APPROVAL_MODAL && APPROVAL_MODAL.show();
     }catch(e){ console.error('open approval error', e); showApAlert('Không thể tải phiếu.'); }
 }
@@ -135,6 +151,27 @@ async function openApproval(id){
 function showApAlert(msg){
     const el = document.getElementById('apAlert');
     el.textContent = msg; el.classList.remove('d-none');
+}
+
+async function cancelApproval(){
+    if (!currentOrder?.id) return;
+    if (!confirm('Bạn có chắc muốn hủy phiếu này?')) return;
+    try{
+        await AdminAPI.request(`/admin/kitchen/orders/${currentOrder.id}/status`, { method: 'PUT', body: JSON.stringify({ status: 'cancelled' }) });
+        APPROVAL_MODAL && APPROVAL_MODAL.hide();
+        loadApprovals();
+        alert('Đã hủy phiếu thành công!');
+    }catch(e){ console.error('cancel error', e); showApAlert('Không thể hủy phiếu.'); }
+}
+
+async function approveOnly(){
+    if (!currentOrder?.id) return;
+    try{
+        await AdminAPI.request(`/admin/kitchen/orders/${currentOrder.id}/approve`, { method: 'PUT' });
+        APPROVAL_MODAL && APPROVAL_MODAL.hide();
+        loadApprovals();
+        alert('Đã duyệt phiếu thành công!');
+    }catch(e){ console.error('approve error', e); showApAlert('Không thể duyệt.'); }
 }
 
 async function approveAndPrint(){
